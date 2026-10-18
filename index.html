@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09131b">
+  <title>RollingBall Chatbot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <canvas id="motion-canvas" aria-hidden="true"></canvas>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="RollingBall Chat home">
+      <svg class="brand-mark" viewBox="0 0 54 42" aria-hidden="true">
+        <path d="M6 28C6 12 18 7 25 15s-2 20 9 20c8 0 12-7 12-15" fill="none" stroke="url(#brand-gradient)" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="45" cy="18" r="5" fill="#ff884d"/>
+        <defs><linearGradient id="brand-gradient" x1="5" y1="8" x2="47" y2="36"><stop stop-color="#27d8d0"/><stop offset=".58" stop-color="#9be27d"/><stop offset="1" stop-color="#ff884d"/></linearGradient></defs>
+      </svg>
+      <span class="brand-name">rollingball<span class="brand-product">CHAT</span></span>
+    </a>
+    <div class="topbar-right">
+      <div class="api-status" id="api-status" data-state="checking" role="status" aria-live="polite">
+        <span class="status-light"></span>
+        <span class="status-label">Checking query API</span>
+      </div>
+      <span class="topbar-divider" aria-hidden="true"></span>
+      <span class="model-label">LOCAL QUERY</span>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="side-panel" aria-label="Conversation tools">
+      <div class="side-topline">
+        <span class="section-kicker">WORKSPACE</span>
+        <button class="new-chat-button" id="new-chat" type="button" aria-label="Start a new chat" title="New chat">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+      <button class="conversation-row" type="button" aria-current="page">
+        <span class="conversation-symbol" aria-hidden="true"><span></span></span>
+        <span class="conversation-name">City services</span>
+        <span class="conversation-indicator" aria-hidden="true"></span>
+      </button>
+
+      <div class="prompt-section">
+        <p class="section-kicker">START WITH</p>
+        <div class="prompt-list">
+          <button class="prompt-button" type="button" data-prompt="When is the next bus to downtown after 09:00?">
+            <span class="prompt-glyph glyph-transit" aria-hidden="true">↗</span>
+            <span>Next bus downtown</span>
+          </button>
+          <button class="prompt-button" type="button" data-prompt="What city services are available right now?">
+            <span class="prompt-glyph glyph-services" aria-hidden="true">◌</span>
+            <span>Available services</span>
+          </button>
+          <button class="prompt-button" type="button" data-prompt="Look up user u001">
+            <span class="prompt-glyph glyph-user" aria-hidden="true">◎</span>
+            <span>Find a user</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="side-bottom">
+        <div class="endpoint-symbol" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.64 5.64l2.12 2.12m8.48 8.48 2.12 2.12m0-12.72-2.12 2.12m-8.48 8.48-2.12 2.12"/><circle cx="12" cy="12" r="4"/></svg>
+        </div>
+        <div>
+          <span class="side-bottom-title">Query endpoint</span>
+          <code>Configured at runtime</code>
+        </div>
+      </div>
+    </aside>
+
+    <section class="chat-panel" aria-labelledby="chat-title">
+      <div class="chat-heading">
+        <div>
+          <p class="section-kicker">ROLLINGBALL <span class="kicker-separator">/</span> CITY ASSISTANT</p>
+          <h1 id="chat-title">A little more <span>momentum.</span></h1>
+        </div>
+        <div class="session-mark" aria-hidden="true">
+          <span class="session-orbit orbit-one"></span>
+          <span class="session-orbit orbit-two"></span>
+          <span class="session-ball"></span>
+        </div>
+      </div>
+
+      <div class="chat-window">
+        <div class="message-list" id="messages" role="log" aria-live="polite" aria-relevant="additions text">
+          <article class="message assistant-message welcome-message">
+            <div class="message-avatar assistant-avatar" aria-hidden="true"><span></span></div>
+            <div class="message-content">
+              <div class="message-meta"><span>RollingBall</span><time>NOW</time></div>
+              <div class="message-bubble">
+                <p>Hey there. What can I help you find across the city?</p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="composer-wrap">
+          <form class="composer" id="chat-form">
+            <label class="visually-hidden" for="chat-input">Message RollingBall</label>
+            <textarea id="chat-input" name="query" rows="1" maxlength="2000" placeholder="Ask about city services, users, or transit…" required></textarea>
+            <button class="send-button" id="send-button" type="submit" aria-label="Send message" title="Send message">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-5 16-3-6-8-2Zm8 2 8-10"/></svg>
+            </button>
+          </form>
+          <div class="composer-footnote"><span>ENTER TO SEND</span><span class="footnote-dot"></span><span>SHIFT + ENTER FOR NEW LINE</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="/assets/script.js" defer></script>
+</body>
+</html>
